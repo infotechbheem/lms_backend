@@ -41,6 +41,18 @@
                     </a>
                 </li>
 
+                <li class="nav-item {{ request()->routeIs('admin.create-membership') ? "active" : "" }}">
+                    <a href="{{ route('admin.create-membership') }}" class="nav-link {{ request()->routeIs('admin.create-membership') ? "active" : "" }}">
+                        <i class="nav-icon fas fa-tachometer-alt"></i>
+                        <p>Create Membership</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('admin.all-membership') }}" class="nav-link {{ request()->routeIs('admin.all-membership') ||  request()->routeIs('admin.view-membership-details') ? "active" : "" }}">
+                        <i class="nav-icon fas fa-tachometer-alt"></i>
+                        <p>All Membership</p>
+                    </a>
+                </li>
                 <!-- Lavels / Membership -->
                 <li class="nav-header">Lavel / Membership</li>
                 <li class="nav-item">
@@ -53,19 +65,6 @@
                     <a href="{{ route('admin.created-course') }}" class="nav-link {{ request()->routeIs('admin.created-course') || request()->routeIs('admin.view-course-details') ? "active" : "" }}">
                         <i class="nav-icon fas fa-tachometer-alt"></i>
                         <p>Created Course</p>
-                    </a>
-                </li>
-
-                <li class="nav-item {{ request()->routeIs('admin.create-membership') ? "active" : "" }}">
-                    <a href="{{ route('admin.create-membership') }}" class="nav-link {{ request()->routeIs('admin.create-membership') ? "active" : "" }}">
-                        <i class="nav-icon fas fa-tachometer-alt"></i>
-                        <p>Create Membership</p>
-                    </a>
-                </li>
-                <li class="nav-item {{ request()->routeIs('admin.all-membership') ? "active" : "" }}">
-                    <a href="{{ route('admin.all-membership') }}" class="nav-link {{ request()->routeIs('admin.all-membership') ? "active" : "" }}">
-                        <i class="nav-icon fas fa-tachometer-alt"></i>
-                        <p>All Membership</p>
                     </a>
                 </li>
                 <!-- Student Area -->

@@ -20,8 +20,7 @@ class MembershipController extends Controller
 
     public function createMembership()
     {
-        $courses =  Course::all();
-        return view('auth.admin.membership.create-membership', compact('courses'));
+        return view('auth.admin.membership.create-membership');
     }
 
     public function storeMembership(Request $request)
@@ -75,6 +74,15 @@ class MembershipController extends Controller
         $memberships = Membership::all();
         return view('auth.admin.membership.all-membership', compact('memberships'));
     }
+
+    public function viewMembershipDetails($membershipId){
+        // Find the membership by ID
+        $membership = Membership::where('membership_id', $membershipId)->first();
+        $course = Course::where('membership_id', $membershipId)->get();
+        return view('auth.admin.membership.view-membership-details', compact('membership', 'course'));
+    }
+
+
     public function deleteMembership($id)
     {
         // Find the membership by ID
@@ -191,27 +199,29 @@ class MembershipController extends Controller
     }
 
     public function viewCourseDetails($Course_id){
-        // Decrypt the course ID
-        $materialId = Crypt::decryptString($Course_id);
+        // // Decrypt the course ID
+        $materialId = Crypt::decryptString( $Course_id);
     
         // Get all course curriculum details by course ID
         $courseMaterialDetails = CourseCurriculum::where('course_id', $materialId)->get();
     
+        // dd($courseMaterialDetails);
         // Get the course details
-        $courseDetails = Course::find($materialId);
+        $course = Course::find($materialId);
     
         // Get the recorded course (for intro video, etc.)
         $recordedCourse = RecordedCourse::where('course_id', $materialId)->first();
     
-        // If any of the details are missing, redirect back with an error
-        if(!$courseMaterialDetails || !$courseDetails || !$recordedCourse){
-            return redirect()->back()->with('error', 'Material courses not found');
-        }
+        // // If any of the details are missing, redirect back with an error
+        // if(!$courseMaterialDetails || !$courseDetails || !$recordedCourse){
+        //     return redirect()->back()->with('error', 'Material courses not found');
+        // }
     
         // Group the chapters by section number
         $groupedChapters = $courseMaterialDetails->groupBy('section_number');
         
         // Return the view with the required data
-        return view('auth.admin.membership.view-course-details', compact('groupedChapters', 'courseDetails', 'recordedCourse'));
+        // return view('auth.admin.membership.view-course-details', compact('groupedChapters', 'courseDetails', 'recordedCourse'));
+        return view('auth.admin.membership.view-course-details', compact('recordedCourse','course', 'groupedChapters'));
     }
 }

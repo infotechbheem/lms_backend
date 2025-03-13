@@ -18,6 +18,16 @@ Route::middleware(['student_auth', 'clear_cache'])->prefix('auth/student')->grou
 
     Route::controller(StudentCourseController::class)->prefix('course')->group(function () {
         Route::get('/', 'course')->name('student.course');
+        Route::get('/recorded-class', 'recordedClass')->name('student.recorded-class');
+        Route::get('/view-recorded-class/{id}', 'viewRecordedClass')->name('student.view-recorded-class');
+        Route::post('/add-comments', 'addComments')->name('student.add-comments');
+
+
+        Route::get('/quiz', 'quiz')->name('student.quiz');
+
+        // Online Live Classes
+        Route::get('/live-classes', 'liveClasses')->name('student.live-classes');
+   
     });
 
     Route::controller(AttendanceController::class)->group(function () {

@@ -33,14 +33,11 @@
                                 <th>Course Title</th>
                                 <th>Class Title</th>
                                 <th>Class Type</th>
-                                <th>Date</th>
                                 <th>Time</th>
                                 <th>Fee Type</th>
-                                <th>Currency</th>
                                 <th>Discount</th>
                                 <th>Coordinator Name</th>
                                 <th>Venue</th>
-                                <th>Cover Image</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -51,22 +48,12 @@
                                 <td>{{ $class->course_title }}</td>
                                 <td>{{ $class->class_title }}</td>
                                 <td>{{ $class->class_type }}</td>
-                                <td>{{ $class->date }}</td>
                                 <td>{{ $class->time }}</td>
                                 <td>{{ $class->fee_type }}</td>
-                                <td>{{ $class->currency }}</td>
                                 <td>₹ {{ number_format($class->discount_price, 2) }}</td>
                                 <td>{{ $class->coordinator }}</td>
                                 <td>{{ $class->venue }}</td>
                                 <td>
-                                    <img src="{{ asset('storage/' . $class->cover_image) }}" style="width: 80px; height: auto;" alt="">
-                                </td>
-                                <td>
-                                    <!-- View Modal Button -->
-                                    <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#viewMessageModal" data-message="{{ $class->description }}">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-
                                     <!-- View Course Details -->
                                     <a href="{{ route('admin.view-course-details', $class->encrypted_id) }}" class="btn btn-sm btn-warning" title="View Course Material Details"><i class="fas fa-eye"></i></a>
 
@@ -88,26 +75,6 @@
             </div>
         </div>
     </section>
-</div>
-
-<!-- Modal for Viewing Class Description -->
-<div class="modal fade" id="viewMessageModal" tabindex="-1" role="dialog" aria-labelledby="viewMessageModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="viewMessageModalLabel">Class Description</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p id="classMessage"></p> <!-- The message will be inserted here -->
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
 </div>
 
 <!-- Edit Class Modal -->
@@ -194,14 +161,6 @@
 
 <script>
     $(document).ready(function() {
-        // View Message Modal (View button clicks)
-        $('#viewMessageModal').on('show.bs.modal', function(event) {
-            var button = $(event.relatedTarget);
-            var message = button.data('message');
-            var modal = $(this);
-            modal.find('#classMessage').text(message);
-        });
-
         // Edit Class Modal (Edit button clicks)
         $('#editClassModal').on('show.bs.modal', function(event) {
             var button = $(event.relatedTarget);

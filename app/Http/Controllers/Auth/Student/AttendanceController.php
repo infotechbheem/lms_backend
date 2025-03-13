@@ -24,20 +24,25 @@ class AttendanceController extends Controller
         $decoded_course_id = json_decode($course_id, true);
         $courses = Course::whereIn('id', $decoded_course_id)->get(); 
     
+        // dd($courses);
         $membership_id = Student::where('student_id', $std_id)->value('membership_id');
         $decoded_membership_id = json_decode($membership_id, true);
     
-        // Fetch membership course ids from the membership table
-        $membership_course_ids = Membership::whereIn('membership_id', $decoded_membership_id)->pluck('course_id');
-    
+       // Fetch membership course ids from the membership table
+        $membership_course_ids = Course::whereIn('membership_id', $decoded_membership_id)->pluck('id');
+
         // Flatten and decode all course_ids from the membership records
         $all_membership_course_ids = [];
-    
-        foreach ($membership_course_ids as $course_ids) {
-            $decoded_course_ids = json_decode($course_ids, true); // Decode the nested JSON string
-            $all_membership_course_ids = array_merge($all_membership_course_ids, $decoded_course_ids); // Merge the arrays
+
+        // Since $membership_course_ids is already an array of integers, we don't need to json_decode()
+        foreach ($membership_course_ids as $course_id) {
+            // If each $course_id itself was supposed to be a JSON string (it might be), decode it.
+            // But since we're working with IDs directly, we just add them to the array.
+            $all_membership_course_ids[] = $course_id;
         }
-    
+
+        // dd($all_membership_course_ids);
+
         // Remove duplicates if any
         $all_membership_course_ids = array_unique($all_membership_course_ids);
     

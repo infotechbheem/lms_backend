@@ -225,20 +225,43 @@
                                 <div class="form-group">
                                     <textarea class="summernote" name="chapter_content_${sectionId}_${chapterNumber}" id="chapter_content_${sectionId}_${chapterNumber}" rows="10" cols="80"></textarea>
                                 </div>
-                                <div class="row" style="gap:50px">
+                               <div class="row justify-content-center" style="gap:50px">
+                                    <!-- Upload Multiple PDF -->
                                     <div class="form-group">
                                         <div class="btn btn-default btn-file">
-                                            <i class="fas fa-paperclip"></i> Attachment
-                                            <input type="file" name="chapter_materials_${sectionId}_${chapterNumber}">
+                                            <i class="fas fa-file-pdf"></i> Upload Multiple PDF
+                                            <!-- Added multiple attribute -->
+                                            <input type="file" name="chapter_materials_${sectionId}_${chapterNumber}[]" multiple accept=".pdf">
                                         </div>
                                         <p class="help-block">Max. 32MB</p>
                                     </div>
+
+                                    <!-- Upload Video Material -->
                                     <div class="form-group">
                                         <div class="btn btn-default btn-file">
-                                            <i class="fas fa-video mr-"></i> Upload Video Material
-                                            <input type="file" name="chapter_video_materials_${sectionId}_${chapterNumber}">
+                                            <i class="fas fa-video"></i> Upload Video Material
+                                            <!-- Added multiple attribute -->
+                                            <input type="file" name="chapter_video_materials_${sectionId}_${chapterNumber}[]" multiple accept="video/*">
                                         </div>
                                         <p class="help-block">Max. 1 GB</p>
+                                    </div>
+
+                                    <!-- Upload Multiple Audio Files -->
+                                    <div class="form-group">
+                                        <div class="btn btn-default btn-file">
+                                            <i class="fas fa-headphones-alt"></i> Upload Multiple Audio Files
+                                            <!-- Added multiple attribute -->
+                                            <input type="file" name="chapter_audio_materials_${sectionId}_${chapterNumber}[]" multiple accept="audio/*">
+                                        </div>
+                                    </div>
+
+                                    <!-- Upload Multiple Image Files -->
+                                    <div class="form-group">
+                                        <div class="btn btn-default btn-file">
+                                            <i class="fas fa-image"></i> Upload Multiple Image Files
+                                            <!-- Added multiple attribute -->
+                                            <input type="file" name="chapter_image_materials_${sectionId}_${chapterNumber}[]" multiple accept="image/*">
+                                        </div>
                                     </div>
                                 </div>
                             </div>

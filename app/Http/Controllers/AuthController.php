@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\Mentor;
+use App\Models\Volunteer;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -211,8 +212,14 @@ class AuthController extends Controller
                 $user = Auth::user();
                 // Redirect based on the user role
                 if ($user->hasRole('volunteer')) {
-                    // Fetch the mail details for this ngo_id from the database
                     return redirect()->route('volunteer.dashboard');
+                }else if ($user->hasRole('volunteer')) {
+                    if(Volunteer::where('volunteer_id', $user->username)){
+                        // Fetch the mail details for this ngo_id from the database
+                        return redirect()->route('volunteer.dashboard');
+                    }
+                    Auth::logout();
+                    return redirect('/volunteer-login')->with('failed', 'You do not have access to this area.');
                 }
                 // If the user does not have a recognized role, log them out
                 Auth::logout();

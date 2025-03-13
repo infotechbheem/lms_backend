@@ -21,13 +21,13 @@
              </a>
          </li>
          <li class="nav-item">
-             <a class="nav-link" data-bs-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
+             <a class="nav-link" href="{{ route('student.live-classes') }}">
                  <i class="typcn typcn-document-text menu-icon"></i>
                  <span class="menu-title">Live Classes</span>
              </a>
          </li>
          <li class="nav-item">
-             <a class="nav-link" data-bs-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
+             <a class="nav-link" href="{{ route(name: 'student.recorded-class') }}">
                  <i class="typcn typcn-document-text menu-icon"></i>
                  <span class="menu-title">Recorded Course</span>
              </a>
@@ -47,7 +47,7 @@
          <li class="nav-item">
              <a class="nav-link" data-bs-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
                  <i class="typcn typcn-document-text menu-icon"></i>
-                 <span class="menu-title">Test</span>
+                 <span class="menu-title">Test / Quiz</span>
              </a>
          </li>
          <li class="nav-item">

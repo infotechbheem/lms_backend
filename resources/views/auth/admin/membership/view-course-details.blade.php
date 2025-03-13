@@ -42,7 +42,7 @@
                     <div class="row">
                         <div class="col-12 col-md-12 col-lg-8 order-2 order-md-1">
                             <div class="row">
-                                <div class="col-12 col-md-4 col-lg-2">
+                                <div class="col-12 col-sm-6 col-lg-4 col-xl-2">
                                     <div class="info-box bg-light">
                                         <div class="info-box-content">
                                             <span class="info-box-text text-center text-muted">Level</span>
@@ -50,7 +50,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-12 col-md-4 col-lg-2">
+                                <div class="col-12 col-sm-6 col-lg-4 col-xl-2">
                                     <div class="info-box bg-light">
                                         <div class="info-box-content">
                                             <span class="info-box-text text-center text-muted">Q & A Access</span>
@@ -58,7 +58,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-12 col-md-4 col-lg-2">
+                                <div class="col-12 col-sm-6 col-lg-4 col-xl-2">
                                     <div class="info-box bg-light">
                                         <div class="info-box-content">
                                             <span class="info-box-text text-center text-muted">Comments</span>
@@ -66,7 +66,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-12 col-md-4 col-lg-2">
+                                <div class="col-12 col-sm-6 col-lg-4 col-xl-2">
                                     <div class="info-box bg-light">
                                         <div class="info-box-content">
                                             <span class="info-box-text text-center text-muted">Duration</span>
@@ -74,7 +74,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-12 col-md-4 col-lg-2">
+                                <div class="col-12 col-sm-6 col-lg-4 col-xl-2">
                                     <div class="info-box bg-light">
                                         <div class="info-box-content">
                                             <span class="info-box-text text-center text-muted">Video Quality</span>
@@ -82,7 +82,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-12 col-md-4 col-lg-2">
+                                <div class="col-12 col-sm-6 col-lg-4 col-xl-2">
                                     <div class="info-box bg-light">
                                         <div class="info-box-content">
                                             <span class="info-box-text text-center text-muted">Uploaded Date</span>
@@ -91,24 +91,91 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row p-3 shadow-lg">
-                                <div class="col-md-6 col-lg-6">
-                                    <h4>Intro Video</h4>
-                                    <div class="embed-responsive embed-responsive-16by9">
-                                        <iframe class="embed-responsive-item" src="{{ asset($recordedCourse->intro_video_path) }}" allowfullscreen></iframe>
-                                    </div>
+                            <div class="col-12">
+                                <h4>Intro Video</h4>
+                                <div class="embed-responsive embed-responsive-16by9">
+                                    <iframe class="embed-responsive-item" src="{{ asset($recordedCourse->intro_video_path) }}" allowfullscreen></iframe>
                                 </div>
-
-                                <div class="col-md-6 col-lg-6">
-                                    <h4>Thumbnail</h4>
-                                    @if($recordedCourse->thumbnail)
-                                    <img src="{{ asset($recordedCourse->thumbnail) }}" alt="Thumbnail" class="img-fluid">
-                                    @else
-                                    <p>No thumbnail available</p>
-                                    @endif
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-12 col-lg-4 order-1 order-md-2">
+                            <h3 class="text-primary"><i class="fas fa-paint-brush"></i> {{ $course->course_title }}</h3>
+                            <p class="text-muted">{{ $course->description }}</p>
+                            <br>
+                            <div class="text-muted row">
+                                <div class="col">
+                                    <p class="text-sm">Class title :
+                                        <b class="d-block">{{ str()->ucfirst($course->class_title) }} </b>
+                                    </p>
+                                </div>
+                                <div class="col">
+                                    <p class="text-sm">Class Type :
+                                        <b class="d-block">{{ str()->ucfirst($course->class_type) }}</b>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="text-muted row">
+                                <div class="col">
+                                    <p class="text-sm">Start Date :
+                                        <b class="d-block">{{ $course->start_date }} </b>
+                                    </p>
+                                </div>
+                                <div class="col">
+                                    <p class="text-sm">End Date :
+                                        <b class="d-block">{{ $course->end_date ?? "N/A" }}</b>
+                                    </p>
+                                </div>
+                                <div class="col">
+                                    <p class="text-sm">Timing :
+                                        <b class="d-block">{{ \Carbon\Carbon::parse($course->time)->format('h:i:A') ?? "N/A" }}</b>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="text-muted row">
+                                <div class="col">
+                                    <p class="text-sm">Class Venue :
+                                        <b class="d-block">{{ $course->venue }} </b>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="text-muted row">
+                                <div class="col">
+                                    <p class="text-sm">Fee Type :
+                                        <b class="d-block">{{ $course->fee_type }} </b>
+                                    </p>
+                                </div>
+                                <div class="col">
+                                    <p class="text-sm">Currency :
+                                        <b class="d-block">{{ $course->currency ?? "N/A" }}</b>
+                                    </p>
+                                </div>
+                                <div class="col">
+                                    <p class="text-sm">Discount Price :
+                                        <b class="d-block">₹ {{ number_format($course->discount_price, 2) ?? "N/A" }}</b>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="text-muted row">
+                                <div class="col">
+                                    <p class="text-sm">Cordinator Name :
+                                        <b class="d-block">{{ str()->ucfirst($course->coordinator) }} </b>
+                                    </p>
+                                </div>
+                                <div class="col">
+                                    <p class="text-sm">Course Created Date & Timing :
+                                        <b class="d-block">{{ \Carbon\Carbon::parse($course->created_at)->format('d-m-Y h:i:A') ?? "N/A" }}</b>
+                                    </p>
                                 </div>
                             </div>
 
+                            <h5 class="mt-5 text-muted">Cover Image</h5>
+                            <div class="row">
+                                <img src="{{ asset('storage/'. $course->cover_image) }}" class="img-fluid" alt="">
+                            </div>
+
+                        </div>
+
+                        <div class="col-12 col-md-12 col-lg-12 order-2 order-md-2">
                             <h3 class="mt-3">Chapter View Details</h3>
                             @foreach ($groupedChapters as $sectionNumber => $chapters)
                             <div class="row mt-3 shadow-lg p-2 rounded" style="overflow: scroll">
@@ -132,105 +199,64 @@
 
                                         <!-- Display PDF Material if exists -->
                                         @if($chapter->pdf_material)
+                                        @php
+                                        $pdfMaterials = json_decode($chapter->pdf_material);
+                                        @endphp
+                                        @foreach ($pdfMaterials as $pdf)
                                         <p class="m-0">
-                                            <a href="{{ asset($chapter->pdf_material) }}" target="_blank" class="link-black text-sm">
+                                            <a href="{{ asset($pdf) }}" target="_blank" class="link-black text-sm">
                                                 <i class="fas fa-link mr-1"></i> PDF Material
                                             </a>
                                         </p>
+                                        @endforeach
                                         @endif
 
                                         <!-- Display Video Material if exists -->
                                         @if($chapter->video_material)
+                                        @php
+                                        $videoMaterials = json_decode($chapter->video_material);
+                                        @endphp
+                                        @foreach ($videoMaterials as $video)
                                         <p class="m-0">
-                                            <a href="{{ asset($chapter->video_material) }}" target="_blank" class="link-black text-sm">
+                                            <a href="{{ asset($video) }}" target="_blank" class="link-black text-sm">
                                                 <i class="fas fa-link mr-1"></i> Video Material
                                             </a>
                                         </p>
+                                        @endforeach
+                                        @endif
+
+                                        <!-- Display Audio Material if exists -->
+                                        @if($chapter->audio_materials)
+                                        @php
+                                        $audioMaterials = json_decode($chapter->audio_materials);
+                                        @endphp
+                                        @foreach ($audioMaterials as $audio)
+                                        <p class="m-0">
+                                            <a href="{{ asset($audio) }}" target="_blank" class="link-black text-sm">
+                                                <i class="fas fa-link mr-1"></i> Audio Material
+                                            </a>
+                                        </p>
+                                        @endforeach
+                                        @endif
+
+                                        <!-- Display Image Material if exists -->
+                                        @if($chapter->image_materials)
+                                        @php
+                                        $imageMaterials = json_decode($chapter->image_materials);
+                                        @endphp
+                                        @foreach ($imageMaterials as $image)
+                                        <p class="m-0">
+                                            <a href="{{ asset($image) }}" target="_blank" class="link-black text-sm">
+                                                <i class="fas fa-link mr-1"></i> Image Material
+                                            </a>
+                                        </p>
+                                        @endforeach
                                         @endif
                                     </div>
                                     @endforeach
                                 </div>
                             </div>
                             @endforeach
-                        </div>
-                        <div class="col-12 col-md-12 col-lg-4 order-1 order-md-2">
-                            <h3 class="text-primary"><i class="fas fa-paint-brush"></i> {{ $courseDetails->course_title }}</h3>
-                            <p class="text-muted">{{ $courseDetails->description }}</p>
-                            <br>
-                            <div class="text-muted row">
-                                <div class="col">
-                                    <p class="text-sm">Class title :
-                                        <b class="d-block">{{ str()->ucfirst($courseDetails->class_title) }} </b>
-                                    </p>
-                                </div>
-                                <div class="col">
-                                    <p class="text-sm">Class Type :
-                                        <b class="d-block">{{ str()->ucfirst($courseDetails->class_type) }}</b>
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="text-muted row">
-                                <div class="col">
-                                    <p class="text-sm">Start Date :
-                                        <b class="d-block">{{ $courseDetails->start_date }} </b>
-                                    </p>
-                                </div>
-                                <div class="col">
-                                    <p class="text-sm">End Date :
-                                        <b class="d-block">{{ $courseDetails->end_date ?? "N/A" }}</b>
-                                    </p>
-                                </div>
-                                <div class="col">
-                                    <p class="text-sm">Timing :
-                                        <b class="d-block">{{ \Carbon\Carbon::parse($courseDetails->time)->format('h:i:A') ?? "N/A" }}</b>
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="text-muted row">
-                                <div class="col">
-                                    <p class="text-sm">Class Venue :
-                                        <b class="d-block">{{ $courseDetails->venue }} </b>
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="text-muted row">
-                                <div class="col">
-                                    <p class="text-sm">Fee Type :
-                                        <b class="d-block">{{ $courseDetails->fee_type }} </b>
-                                    </p>
-                                </div>
-                                <div class="col">
-                                    <p class="text-sm">Currency :
-                                        <b class="d-block">{{ $courseDetails->currency ?? "N/A" }}</b>
-                                    </p>
-                                </div>
-                                <div class="col">
-                                    <p class="text-sm">Discount Price :
-                                        <b class="d-block">₹ {{ number_format($courseDetails->discount_price, 2) ?? "N/A" }}</b>
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="text-muted row">
-                                <div class="col">
-                                    <p class="text-sm">Cordinator Name :
-                                        <b class="d-block">{{ str()->ucfirst($courseDetails->coordinator) }} </b>
-                                    </p>
-                                </div>
-                                <div class="col">
-                                    <p class="text-sm">Course Created Date & Timing :
-                                        <b class="d-block">{{ \Carbon\Carbon::parse($courseDetails->created_at)->format('d-m-Y h:i:A') ?? "N/A" }}</b>
-                                    </p>
-                                </div>
-                            </div>
-
-                            <h5 class="mt-5 text-muted">Cover Image</h5>
-                            <div class="row">
-                                <img src="{{ asset('storage/'. $courseDetails->cover_image) }}" class="img-fluid" alt="">
-                            </div>
-                            <div class="text-center mt-5 mb-3">
-                                <a href="#" class="btn btn-sm btn-primary">Add files</a>
-                                <a href="#" class="btn btn-sm btn-warning">Report contact</a>
-                            </div>
                         </div>
                     </div>
                 </div>

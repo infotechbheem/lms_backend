@@ -17,5 +17,7 @@ class CourseCurriculum extends Model
         'chapter_content',
         'pdf_material',
         'video_material',
+        'image_material',
+        'audio_material',
     ];
 }

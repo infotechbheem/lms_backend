@@ -21,6 +21,8 @@ return new class extends Migration
             $table->longText('chapter_content');
             $table->text('pdf_material');
             $table->text('video_material');
+            $table->text('audio_material');
+            $table->text('image_material');
             $table->timestamps();
         });
     }

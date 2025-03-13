@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Volunteer;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -18,12 +19,18 @@ class VolunteerAuthMiddleware
     {
         if (Auth::check()) {
             $user = Auth::user();
-            if ($user->hasRole('volunteer')) {
+            if ($user->hasRole('student')) {
+                if(Volunteer::where('volunteer_id', $user->username)){
+                    return $next($request);
+                }
+                Auth::logout();
+                return redirect()->back()->with('warning', 'You are unauthorized person');
+            }elseif ($user->hasRole('volunteer')){
                 return $next($request);
             }
             Auth::logout();
             return redirect()->back()->with('warning', 'You are unauthorized person');
         }
-        return redirect('/volunteer-login')->with('warning', 'You are not authorized person');
+        return redirect('/volunteer-login')->with('warning', 'Session is expired');
     }
 }

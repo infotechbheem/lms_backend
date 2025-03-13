@@ -19,6 +19,7 @@ Route::middleware(['admin_auth', 'clear_cache'])->prefix('auth/admin')->group(fu
         Route::get('/create-membership', 'createMembership')->name('admin.create-membership');
         Route::post('/store-membership', 'storeMembership')->name('admin.store-membership');
         Route::get('/all-memberships', 'allMemberships')->name('admin.all-membership');
+        Route::get('/view-membership-details/{membershipId}', 'viewMembershipDetails')->name('admin.view-membership-details');  
         Route::get('/delete-membership/{id}', 'deleteMembership')->name('admin.delete-membership');
         Route::get('/create-courses', 'createCourse')->name(name: 'admin.create-courses');
         Route::get('/created-course', 'createdCourse')->name('admin.created-course');
