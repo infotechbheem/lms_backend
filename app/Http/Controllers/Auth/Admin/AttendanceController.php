@@ -31,73 +31,67 @@ class AttendanceController extends Controller
         // Validate the incoming request
         $validator = Validator::make($request->all(), [
             'attendances'                     => 'required|array', // Expect an array of attendance records
-            'attendances.*.student_name'          => 'required',
-            'attendances.*.student_id'            => 'required',
-            'attendances.*.course'             => 'required',
-            'attendances.*.attendance_status' => 'required',
+            'attendances.*.student_name'       => 'required',
+            'attendances.*.student_id'         => 'required',
+            'attendances.*.course'             => 'required_without:attendances.*.membership',
+            'attendances.*.membership'         => 'required_without:attendances.*.course',
+            'attendances.*.attendance_status'  => 'required',
         ]);
+    
         // Check if validation fails
         if ($validator->fails()) {
-            dd($validator);
             return redirect()->back()->withErrors($validator)->withInput();
         }
-
+    
         try {
             DB::beginTransaction();
-
+    
             foreach ($request->attendances as $attendance) {
-              
+    
                 $attendance_status = $attendance['attendance_status'];
-          
+                $student_id = $attendance['student_id'];
+                $student_name = $attendance['student_name'];
+                $selected_id = isset($attendance['membership']) ? $attendance['membership'] : (isset($attendance['course']) ? $attendance['course'] : null);
+    
 
-                $time_in = Course::where('course_title', $attendance['course'])->value('time');
-
-                // Get the current time formatted as 'H:i:s'
-                $current_time = now()->format('H:i:s');
-
-                if ($current_time <= $time_in) {
-                    $attendance_punctuality = "On Time";
-                } else {
-                    $attendance_punctuality = "Late";
-                }
-
-                // Check if attendance record already exists for the employee on the current date
-
-                $existingAttendance = Attendance::where('student_id')->whereDate('created_at', date('Y-m-d'))->first(); // Ensure you have a 'current_date' field
+                // Check if attendance record already exists for the student on the current date
+                $existingAttendance = Attendance::where('student_id', $student_id)
+                    ->where('selected_id', $selected_id)
+                    ->whereDate('created_at', now()->toDateString())
+                    ->first();
+    
                 if ($existingAttendance) {
                     // Update existing record
-                    DB::table('attendances')
-                        ->where('id', $existingAttendance->id)
-                        ->update([
-                            'student_name'     => $attendance['student_name'],
-                            'course'             => $attendance['course'],
-                            'attendance_status' => $attendance_status,
-                            // 'attendance_punctuality' => $attendance_punctuality,
-                            'updated_at'        => now(),
-                        ]);
+                    $existingAttendance->update([
+                        'student_name'        => $student_name,
+                        'selected_id'         => $selected_id,
+                        'attendance_status'   => $attendance_status,
+                        'updated_at'          => now(),
+                    ]);
                 } else {
                     // Insert new record
-                    DB::table('attendances')->insert([
-                        'student_name'          => $attendance['student_name'],
-                        'student_id'                => $attendance['student_id'],
-                        'course'                  => $attendance['course'],
-                        'attendance_status'      => $attendance_status,
-                        'attendnace_punctuality' => $attendance_punctuality,
-                        'created_at'             => now(),
-                        'updated_at'             => now(),
+                    Attendance::create([
+                        'student_name'        => $student_name,
+                        'student_id'          => $student_id,
+                        'selected_id'         => $selected_id,
+                        'attendance_status'   => $attendance_status,
+                        'created_at'          => now(),
+                        'updated_at'          => now(),
                     ]);
                 }
             }
-
+    
             // Commit the transaction
             DB::commit();
-            return redirect()->back()->with('success', 'Attendance updated/created successfully for all employees!');
+            return redirect()->back()->with('success', 'Attendance updated/created successfully for all students!');
         } catch (\Throwable $th) {
             // Rollback the transaction on error
             DB::rollBack();
+            dd($th);
             return redirect()->back()->with('failed', $th->getMessage());
         }
     }
+    
 
     public function viewAttendance()
     {

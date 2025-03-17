@@ -99,12 +99,13 @@ class WebApiController extends Controller
     }
     public function getStudentByMembership(Request $request)
     {
-        $membershipId = $request->membership_id;
+        $membershipId = $request->membership_id; // Assuming the request contains the 'membership_id'
 
-        // Fetch students based on the membership id
-        $students = Student::leftJoin('courses', 'students.course_id', '=', 'courses.id')
-        ->where('students.membership_id', $membershipId)->get();
+        // Fetch the student records where the membership_id matches, and join with the courses table
+        $students = Student::whereRaw("JSON_UNQUOTE(JSON_EXTRACT(students.membership_id, '$[0]')) = ?", [$membershipId])
+            ->get(); // Fetch the records
 
+        // dd($students);
         return response()->json([
             'students' => $students
         ]);
@@ -114,20 +115,22 @@ class WebApiController extends Controller
     {
         // Get the provided course_id from the request
         $courseId = $request->course;
+        
+        // Fetch the student records where the course_id matches, and join with the courses table
+        $students = Student::leftJoin('courses', 'students.course_id', '=', 'courses.id')
+            ->whereRaw("JSON_VALID(students.course_id) AND JSON_UNQUOTE(JSON_EXTRACT(students.course_id, '$[0]')) = ?", [$courseId]) // Check for valid JSON
+            ->select('students.*', 'courses.course_title')
+            ->get(); // Fetch the records
     
-        // Fetch students and decode the JSON field `course_id` in the students table
-        $students = Student::select('students.*', 'courses.course_title')
-            ->leftJoin('courses', function ($join) {
-                // Using JSON_CONTAINS to match the course_id array in students with the courses table's id
-                $join->on(DB::raw('JSON_CONTAINS(students.course_id, CAST(courses.id AS JSON))'), '=', DB::raw('1'));
-            })
-            ->whereRaw('JSON_CONTAINS(students.course_id, CAST(? AS JSON))', [$courseId])  // Match the given course_id with the decoded JSON
-            ->get();
-    
+            $course_title = Course::find($courseId)->value('course_title');
+
         return response()->json([
-            'students' => $students
+            'students' => $students,
+            'course_title' => $course_title,
         ]);
     }
+    
+    
     
     
     

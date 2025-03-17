@@ -62616,12 +62616,12 @@ body {
   width: 100vw;
 }
 
-#chartPie {
-  width: 3 00px !important;
+.chartPie {
+  width: 300px !important;
   height: 300px !important;
 }
 
-#chartDonut {
-  width: 3 00px !important;
+.chartDonut {
+  width: 300px !important;
   height: 300px !important;
 }

@@ -15,9 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('student_name')->nullable();
             $table->string('student_id')->nullable();
-            $table->string('course')->nullable();
+            $table->string('selected_id')->nullable();
             $table->string('attendance_status')->nullable();
-            $table->string('attendnace_punctuality')->nullable();
             $table->timestamps();
         });
     }

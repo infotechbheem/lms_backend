@@ -8,6 +8,7 @@ use App\Models\ClassComment;
 use App\Models\CourseCurriculum;
 use App\Models\MeetingsLinksShow;
 use App\Models\Membership;
+use App\Models\SadhanaReport;
 use App\Models\Student;
 use Illuminate\Http\Request;
 use Jubaer\Zoom\Facades\Zoom;
@@ -225,6 +226,42 @@ class StudentCourseController extends Controller
 
     public function quiz(){
         return view('auth.student.quiz');
+    }
+
+    public function dailySadhnaReport(){
+        $reports = SadhanaReport::where('student_id', Auth::user()->username)->get(); //
+        return view('auth.student.daily-sadhana-report', compact('reports'));
+    }
+
+    public function storeDailySadhanaReport(Request $request){
+
+        try {
+            DB::beginTransaction();
+
+            $sadhanaData = [
+               'student_id' => Auth::user()->username,
+               'wake_up_time' => $request->wake_up_time,
+               'mangla_arti' => $request->mangla_arti,
+               'chanting_round_before_9_am' => $request->chanting_round_before_9_am,
+               'chanting_round_between_9_am_to_9_pm' => $request->chanting_round_between_9_am_to_9_pm,
+               'chanting_round_after_9_pm' => $request->chanting_round_after_9_pm,
+               'hearing_duration_hour' => $request->hearing_duration_hour,
+               'hearing_duration_minute' => $request->hearing_duration_minute,
+               'reading_duration_hour' => $request->reading_duration_hour,
+               'reading_duration_minute' => $request->reading_duration_minute,
+               'sleeping_time' => $request->sleeping_time,
+            ];
+
+            SadhanaReport::create($sadhanaData);
+
+            DB::commit();
+            return redirect()->back()->with('success', "Daily Sadhana Report Saved Successfully");
+
+        } catch (\Throwable $th) {
+            //throw $th;
+            DB::rollBack();
+            return redirect()->back()->with('error', $th->getMessage());
+        }
     }
 
 }

@@ -62,6 +62,8 @@ Route::middleware(['admin_auth', 'clear_cache'])->prefix('auth/admin')->group(fu
         Route::get('/get-metting-details/{meeting_id}', 'mettingDetails')->name('admin.get-metting-details');
         Route::get('/delete-meetings/{meeting_id}', 'deleteMeetings')->name('admin.delete-meetings');
         Route::post('/store-and-share-meetings-links','sendMeetingsLinks')->name('admin.store-meeting_links');
+        Route::get('/one-two-one_session', 'oneToOneSession')->name('admin.one-to-one-session');
+        
     });
     Route::controller(RecordedCoursesController::class)->group(function () {
         Route::get('/add-recording', 'addRecording')->name('admin.add-recording');

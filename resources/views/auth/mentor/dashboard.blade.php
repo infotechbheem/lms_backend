@@ -388,46 +388,38 @@
                                 <div class="chart"><canvas id="chartDonut"></canvas></div>
                             </div><!-- col -->
                             <div class="col-md-6 col-lg-5 mg-lg-l-auto mg-t-20 mg-md-t-0">
+                                @php
+                                // Collecting month names, registration counts, and percentages for JS
+                                $months = [];
+                                $registrationCounts = [];
+                                $percentages = [];
+                                foreach ($monthlyRegistrations as $month => $registrationCount) {
+                                $percentage = ($registrationCount / $noOfStudent) * 100;
+                                $months[] = DateTime::createFromFormat('!m', $month)->format('F');
+                                $registrationCounts[] = $registrationCount;
+                                $percentages[] = $percentage;
+                                }
+                                @endphp
+
+                                @foreach ($monthlyRegistrations as $month => $registrationCount)
+                                @php
+                                $percentage = ($registrationCount / $noOfStudent) * 100;
+                                @endphp
                                 <div class="az-traffic-detail-item">
                                     <div>
-                                        <span>January</span>
-                                        <span>500 <span>(40%)</span></span>
+                                        <span>{{ DateTime::createFromFormat('!m', $month)->format('F') }}</span>
+                                        <span>{{ $registrationCount }} <span>({{ number_format($percentage, 0) }}%)</span></span>
                                     </div>
                                     <div class="progress">
-                                        <div class="progress-bar bg-purple wd-40p" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>
+                                        <div class="progress-bar bg-{{ ['purple', 'primary', 'info', 'teal'][$month % 4] }} wd-{{ number_format($percentage, 0) }}p" role="progressbar" aria-valuenow="{{ number_format($percentage, 0) }}" aria-valuemin="0" aria-valuemax="100"></div>
                                     </div><!-- progress -->
                                 </div>
-                                <div class="az-traffic-detail-item">
-                                    <div>
-                                        <span>February</span>
-                                        <span>380 <span>(31%)</span></span>
-                                    </div>
-                                    <div class="progress">
-                                        <div class="progress-bar bg-primary wd-31p" role="progressbar" aria-valuenow="31" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div><!-- progress -->
-                                </div>
-                                <div class="az-traffic-detail-item">
-                                    <div>
-                                        <span>March</span>
-                                        <span>250 <span>(20%)</span></span>
-                                    </div>
-                                    <div class="progress">
-                                        <div class="progress-bar bg-info wd-20p" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div><!-- progress -->
-                                </div>
-                                <div class="az-traffic-detail-item">
-                                    <div>
-                                        <span>April</span>
-                                        <span>100 <span>(8%)</span></span>
-                                    </div>
-                                    <div class="progress">
-                                        <div class="progress-bar bg-teal wd-8p" role="progressbar" aria-valuenow="8" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div><!-- progress -->
-                                </div>
+                                @endforeach
                             </div><!-- col -->
                         </div><!-- card-body -->
                     </div><!-- card-dashboard-four -->
                 </div><!-- col -->
+
                 <div class="col-lg-5 col-xl-4">
                     <div class="row row-sm">
                         <div class="col-md-6 col-lg-12 mg-b-20 mg-md-b-0 mg-lg-b-20">
@@ -443,7 +435,7 @@
                                         </div>
                                         <div>
                                             <label>New Students</label>
-                                            <h4>800</h4>
+                                            <h4>{{ number_format($newRegistrationDone,0) }}</h4>
                                         </div>
                                     </div><!-- col -->
                                     <div class="col-6 d-sm-flex align-items-center">
@@ -451,12 +443,12 @@
                                             <span class="peity-bar" data-peity='{"fill": ["#fff"], "width": 21, "height": 20 }'>7,4,5,7,2</span>
                                         </div>
                                         <div>
-                                            <label>Returning Students</label>
-                                            <h4>430</h4>
+                                            <label>Chooses a Mentor</label>
+                                            <h4>{{ $chooses_as_a_mentor }}</h4>
                                         </div>
                                     </div><!-- col -->
                                 </div><!-- card-body -->
-                            </div><!-- card-dashboard-five -->
+                            </div>
                         </div><!-- col -->
                     </div><!-- row -->
                 </div><!-- col-lg-3 -->
@@ -519,6 +511,7 @@
 <script>
     $(function() {
         'use strict'
+
 
         var plot = $.plot('#flotChart', [{
             data: flotSampleData3
@@ -705,35 +698,40 @@
             }
         });
 
-        // Donut Chart
+        // Pass dynamic data from PHP to JavaScript
+        const months = @json($months); // Array of month names (January, February, etc.)
+        const registrationCounts = @json($registrationCounts); // Array of corresponding registration counts (e.g. [25, 20, 30, 15, 10])
+
+
+        // Donut Chart Data
         var datapie = {
-            labels: ['Search', 'Email', 'Referral', 'Social', 'Other']
-            , datasets: [{
-                data: [25, 20, 30, 15, 10]
-                , backgroundColor: ['#6f42c1', '#007bff', '#17a2b8', '#00cccc', '#adb2bd']
+            labels: months, // Dynamic months
+            datasets: [{
+                data: registrationCounts, // Dynamic registration counts
+                backgroundColor: ['#6f42c1', '#007bff', '#17a2b8', '#00cccc', '#adb2bd', '#ff5733', '#33c9ff', '#f7e400', '#0a8102', '#c70039', '#f09144', '#922d7d'], // Example color set for each month
             }]
         };
 
+        // Donut Chart Options
         var optionpie = {
             maintainAspectRatio: false
             , responsive: true
             , legend: {
-                display: false
-            , }
+                display: true, // Set to true to show the legend (optional)
+            }
             , animation: {
                 animateScale: true
                 , animateRotate: true
             }
         };
 
-        // For a doughnut chart
+        // For a Doughnut Chart
         var ctxpie = document.getElementById('chartDonut');
         var myPieChart6 = new Chart(ctxpie, {
             type: 'doughnut'
             , data: datapie
             , options: optionpie
         });
-
     });
 
 </script>

@@ -24,10 +24,11 @@ Route::middleware(['student_auth', 'clear_cache'])->prefix('auth/student')->grou
 
 
         Route::get('/quiz', 'quiz')->name('student.quiz');
-
+        Route::get('/daily-sadhna-report', 'dailySadhnaReport')->name('student.daily-sadhana-report');
+        Route::post('/store-daily-sadhna-report', 'storeDailySadhanaReport')->name('student.store-daily-sadhana-report');
+       
         // Online Live Classes
         Route::get('/live-classes', 'liveClasses')->name('student.live-classes');
-   
     });
 
     Route::controller(AttendanceController::class)->group(function () {

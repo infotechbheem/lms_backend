@@ -130,6 +130,13 @@ class DashboardController extends Controller
                 'email' => $request->email,
             ];
 
+            $exist = NewsLatters::where('email', $request->email)->exists();
+
+            if ($exist) {
+                DB::rollBack();
+                return redirect()->back()->with('warning', 'You are already subscribed to the newsletters');
+            }
+
             $dbresponse = NewsLatters::create($requestedData);
 
             if ($dbresponse) {

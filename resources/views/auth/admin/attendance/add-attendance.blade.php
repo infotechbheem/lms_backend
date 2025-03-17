@@ -57,7 +57,7 @@
                                         <tr>
                                             <th>Student Name</th>
                                             <th>Student Id</th>
-                                            <th>Course</th>
+                                            <th id="selected">Selected</th>
                                             <th>Attendance Status</th>
                                         </tr>
                                     </thead>
@@ -98,15 +98,6 @@
         setInterval(updateTime, 1000);
     });
 
-    function toggleHolidayList(selectElement) {
-        const holidayList = selectElement.closest('tr').querySelector('select[name*="holiday_list"]');
-        if (selectElement.value === 'holiday') {
-            holidayList.style.display = 'block';
-        } else {
-            holidayList.style.display = 'none';
-        }
-    }
-
     // Handle membership change
     $('#membership_id').change(function() {
         var membershipId = $(this).val();
@@ -124,6 +115,9 @@
                 }
                 , success: function(response) {
                     if (response.students.length > 0) {
+
+                        $('#selected').text('Selected Membership');
+
                         response.students.forEach(function(student, index) {
                             $('#students-list').append(`
                                 <tr>
@@ -134,18 +128,19 @@
                                         <input type="text" name="attendances[${index}][student_id]" class="form-control" value="${student.student_id}" required readonly>
                                     </td>
                                     <td>
-                                        <input type="text" name="attendances[${index}][course]" class="form-control" value="${student.course_title}" required readonly>
+                                        <input type="text" name="attendances[${index}][membership]" class="form-control" value="${membershipId}" required readonly>
                                     </td>
-                                    <td>
+                                   <td>
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input present-checkbox" type="checkbox" id="present_${index}" name="attendances[${index}][attendance_status]" value="present" />
+                                            <input class="form-check-input present-checkbox" type="radio" id="present_${index}" name="attendances[${index}][attendance_status]" required value="present" />
                                             <label class="form-check-label" for="present_${index}">Present</label>
                                         </div>
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input absent-checkbox" type="checkbox" id="absent_${index}" name="attendances[${index}][attendance_status]" value="absent" />
+                                            <input class="form-check-input absent-checkbox" type="radio" id="absent_${index}" name="attendances[${index}][attendance_status]" required value="absent" />
                                             <label class="form-check-label" for="absent_${index}">Absent</label>
                                         </div>
                                     </td>
+
                                 </tr>
                             `);
 
@@ -190,6 +185,8 @@
                 }
                 , success: function(response) {
                     if (response.students.length > 0) {
+                        $('#selected').text('Selected Course');
+
                         response.students.forEach(function(student, index) {
                             $('#students-list').append(`
                                 <tr>
@@ -199,38 +196,41 @@
                                     <td>
                                         <input type="text" name="attendances[${index}][student_id]" class="form-control" value="${student.student_id}" required readonly>
                                     </td>
-                                    <td>
-                                        <input type="text" name="attendances[${index}][course]" class="form-control" value="${student.course_title}" required readonly>
+                                     <td>
+                                        <input type="text" name="attendances[${index}][course]" class="form-control" value="${course}" placeholder="${response.course_title}" required readonly style="display:none;">
+                                        <input type="text" class="form-control" value="${response.course_title}" required readonly>
                                     </td>
                                     <td>
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input present-checkbox" type="checkbox" id="present_${index}" name="attendances[${index}][attendance_status]" value="present" />
+                                            <input class="form-check-input present-checkbox" type="radio" id="present_${index}" name="attendances[${index}][attendance_status]" required value="present" />
                                             <label class="form-check-label" for="present_${index}">Present</label>
                                         </div>
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input absent-checkbox" type="checkbox" id="absent_${index}" name="attendances[${index}][attendance_status]" value="absent" />
+                                            <input class="form-check-input absent-checkbox" type="radio" id="absent_${index}" name="attendances[${index}][attendance_status]" value="absent" />
                                             <label class="form-check-label" for="absent_${index}">Absent</label>
                                         </div>
                                     </td>
                                 </tr>
                             `);
-
-                            // Ensure only one checkbox is checked
-                            $(document).on('change', '.present-checkbox', function() {
-                                if (this.checked) {
-                                    $(this).closest('tr').find('.absent-checkbox').prop('checked', false);
-                                }
-                            });
-
-                            $(document).on('change', '.absent-checkbox', function() {
-                                if (this.checked) {
-                                    $(this).closest('tr').find('.present-checkbox').prop('checked', false);
-                                }
-                            });
                         });
+
+                        // Ensure only one checkbox is checked using event delegation
+                        $('#students-list').on('change', '.present-checkbox', function() {
+                            if (this.checked) {
+                                $(this).closest('tr').find('.absent-checkbox').prop('checked', false);
+                            }
+                        });
+
+                        $('#students-list').on('change', '.absent-checkbox', function() {
+                            if (this.checked) {
+                                $(this).closest('tr').find('.present-checkbox').prop('checked', false);
+                            }
+                        });
+
                     } else {
                         alert('No students found under this course.');
                     }
+
                 }
                 , error: function() {
                     alert('Failed to fetch students.');

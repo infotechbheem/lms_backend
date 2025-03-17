@@ -10,6 +10,8 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+use function Pest\Laravel\get;
+
 class DashboardController extends Controller
 {
 
@@ -58,8 +60,38 @@ class DashboardController extends Controller
         $noOfStudentYesterday  = $this->numberOfStudentRegisteredYesterday();
         $noOfStudentThisMonth  = $this->numberOfStudentRegisteredThisMonth();
 
+        // Calculate registrations per month (for example, this year)
+        $monthlyRegistrations = [];
+        for ($i = 1; $i <= 12; $i++) {
+            $monthlyRegistrations[$i] = Student::where('created_by', Auth::user()->username)->orWhere('mentor_id', Auth::user()->username)
+                ->whereMonth('created_at', '=', $i)
+                ->whereYear('created_at', '=', now()->year)
+                ->count();
+        }
 
-        return view("auth.mentor.dashboard", compact('courses', 'memberships', 'students', 'noOfStudent', 'noOfStudentToday', 'noOfStudentYesterday', 'noOfStudentThisMonth'));
+
+        $newRegistrationDone = Student::where('created_by', Auth::user()->username)
+            ->whereDate('created_at', '>=', Carbon::now()->startOfMonth()) // Start of the current month
+            ->whereDate('created_at', '<=', Carbon::now()->endOfMonth())   // End of the current month
+            ->count();
+
+        $chooses_as_a_mentor = Student::where('mentor_id', Auth::user()->username)
+            ->whereDate('created_at', '>=', Carbon::now()->startOfMonth()) // Start of the current month
+            ->whereDate('created_at', '<=', Carbon::now()->endOfMonth())   // End of the current month
+            ->count();
+
+        return view("auth.mentor.dashboard", compact(
+            'courses',
+             'memberships',
+                'students',
+                'noOfStudent',
+                'noOfStudentToday',
+                'noOfStudentYesterday',
+                'noOfStudentThisMonth',
+                'monthlyRegistrations',
+                'newRegistrationDone',
+                'chooses_as_a_mentor',
+        ));
     }
 
     public function mentorLogout()
