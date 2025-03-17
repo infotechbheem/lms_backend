@@ -22,12 +22,12 @@
                     <a href="" class="nav-link">Assignments</a>
                 </li>
 
-                <li class="nav-item {{ request()->routeIs('mentor.students') ? 'active' : '' }}">
-                    <a href="" class="nav-link">Students</a>
+                <li class="nav-item {{ request()->routeIs('mentor.students') ||  request()->routeIs('mentor.student-profile-view') ? 'active' : '' }}">
+                    <a href="{{ route('mentor.students') }}" class="nav-link">Students</a>
                 </li>
 
                 <li class="nav-item {{ request()->routeIs('mentor.reports') ? 'active' : '' }}">
-                    <a href="" class="nav-link">Reports</a>
+                    <a href="{{ route('mentor.reports') }}" class="nav-link">Reports</a>
                 </li>
 
                 <li class="nav-item {{ request()->routeIs('mentor.settings') ? 'active' : '' }}">

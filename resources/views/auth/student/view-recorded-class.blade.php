@@ -190,7 +190,7 @@
 
                         <!-- Comments Section -->
                         <div class="mt-4">
-                            <h5>Top Comments:</h5>
+                            <h5>Top Comments: {{ number_format(count($chapter->comments),0) }}</h5>
                             <div class="comments-list" style="max-height: 300px; overflow-y: auto;">
                                 @foreach($chapter->comments as $comment)
                                 <div class="comment mb-3 p-3" style="background-color: #f8f9fa; border-radius: 5px; border-left: 5px solid #007bff;">

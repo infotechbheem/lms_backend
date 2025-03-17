@@ -63,7 +63,7 @@
                             <h6 class="card-title">Course Enrollment Chart</h6>
                         </div><!-- card-header -->
                         <div class="card-body d-flex justify-content-center">
-                            <canvas id="chartPie" height="100" width="100"></canvas>
+                            <canvas class="chartPie" id="chartPie" height="100" width="100"></canvas>
                         </div><!-- card-body -->
                     </div><!-- card -->
                 </div><!-- col -->
@@ -74,7 +74,7 @@
                             <h6 class="card-title">Membership Subscription Chart</h6>
                         </div><!-- card-header -->
                         <div class="card-body d-flex justify-content-center">
-                            <canvas id="chartDonut"></canvas>
+                            <canvas class="chartDonut" id="chartDonut"></canvas>
                         </div><!-- card-body -->
                     </div><!-- card -->
                 </div><!-- col -->

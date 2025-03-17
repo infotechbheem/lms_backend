@@ -83,7 +83,7 @@
 
                                                     // Safe array access with a check
                                                     $attendanceIn = $statusIndex !== false && isset(explode(',', $attendance->attendance_in_times)[$statusIndex]) ? explode(',', $attendance->attendance_in_times)[$statusIndex] : null;
-                                                    $attendancePunctuality = $statusIndex !== false && isset(explode(',', $attendance->attendnace_punctualities)[$statusIndex]) ? explode(',', $attendance->attendnace_punctualities)[$statusIndex] : null;
+                                                    // $attendancePunctuality = $statusIndex !== false && isset(explode(',', $attendance->attendnace_punctualities)[$statusIndex]) ? explode(',', $attendance->attendnace_punctualities)[$statusIndex] : null;
 
                                                     $bgColor = match($status) {
                                                     'present' => 'lightgreen',
@@ -110,21 +110,11 @@
                                                         @endif
                                                         <br>
                                                         <!-- IN Time -->
-                                                        <span class="bg-info" style="display: inline-block; width: 120px; text-align: center; border-radius: 14px; margin-top: 9px;">
+                                                        <span class="bg-info" style="display: inline-block; height:50px; width: 120px; text-align: center; border-radius: 14px; margin-top: 9px;">
                                                             @if ($attendanceIn)
                                                             <p class="m-0">Attendance In</p> {{ \Carbon\Carbon::parse($attendanceIn)->format('h:i A') }}
                                                             @else
                                                             <p class="m-0">Attendance In</p> N/A
-                                                            @endif
-                                                        </span>
-                                                        <br>
-
-                                                        <!-- OUT Time -->
-                                                        <span class="bg-secondary" style="display: inline-block; width: 130px; text-align: center; border-radius: 14px; margin-top: 9px;">
-                                                            @if ($attendancePunctuality)
-                                                            <p class="m-0">Punctuality</p> {{ $attendancePunctuality }}
-                                                            @else
-                                                            <p class="m-0">Punctuality</p> N/A
                                                             @endif
                                                         </span>
                                                         <br>

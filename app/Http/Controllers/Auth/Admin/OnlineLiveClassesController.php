@@ -97,7 +97,6 @@ class OnlineLiveClassesController extends Controller
 
 
     public function sendMeetingsLinks(Request $request){
-        // dd($request->all());
         try {
 
             DB::beginTransaction();
@@ -124,5 +123,9 @@ class OnlineLiveClassesController extends Controller
             DB::rollBack();
             return redirect()->back()->with('error', $th->getMessage());
         }   
+    }
+
+    public function oneToOneSession(){
+        return view('auth.admin.online-live-classes.one-to-one-session');
     }
 }

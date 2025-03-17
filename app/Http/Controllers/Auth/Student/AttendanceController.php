@@ -16,8 +16,7 @@ class AttendanceController extends Controller
     public function viewAttendance()
     {
         // Get authenticated user
-        $user = Auth::user();
-        $std_id = $user->username;
+        $std_id = Auth::user()->username;
     
         // Decode course_id and membership_id if stored as JSON
         $course_id = Student::where('student_id', $std_id)->value('course_id');
@@ -55,7 +54,7 @@ class AttendanceController extends Controller
         // Remove duplicates by course id
         $unique_courses = $combined_courses->unique('id');
 
-
+        // dd($unique_courses);
 
          // Get the start and end date of the current month
          $startOfMonth = Carbon::now()->startOfMonth();
@@ -67,11 +66,11 @@ class AttendanceController extends Controller
              ->select(
                  'student_id',
                  DB::raw('MAX(student_name) as student_name'),
-                 DB::raw('MAX(course) as courses'),
+                 DB::raw('MAX(selected_id) as courses'),
                  DB::raw('GROUP_CONCAT(attendance_status ORDER BY created_at ASC) as attendance_statuses'),
                  DB::raw('GROUP_CONCAT(DATE(created_at) ORDER BY created_at ASC) as attendance_dates'),
                  DB::raw('GROUP_CONCAT(TIME(created_at) ORDER BY created_at ASC) as attendance_in_times'),
-                 DB::raw('GROUP_CONCAT(attendnace_punctuality ORDER BY created_at ASC) as attendnace_punctualities')
+                //  DB::raw('GROUP_CONCAT(attendnace_punctuality ORDER BY created_at ASC) as attendnace_punctualities')
              )
              ->where('student_id', $std_id)
              ->groupBy('student_id')

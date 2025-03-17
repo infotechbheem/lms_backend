@@ -56,7 +56,6 @@
     <script src="{{ asset('mentor-asset/js/azia.js') }}"></script>
     <script src="{{ asset('mentor-asset/js/chart.flot.sampledata.js') }}"></script>
     <script src="{{ asset('mentor-asset/js/dashboard.sampledata.js') }}"></script>
-    {{-- <script src="{{ asset('mentor-asset/js/chart.chartjs.js') }}"></script> --}}
     @include('auth.mentor.layouts.session-message')
 
 </body>

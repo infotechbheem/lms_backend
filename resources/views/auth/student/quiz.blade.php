@@ -7,7 +7,7 @@
         <div class="col-lg-12 grid-margin stretch-card">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title">All Created Classess</h4>
+                    <h4 class="card-title">Quiz / Test</h4>
                     <div class="table-responsive">
                     </div>
                 </div>
@@ -15,6 +15,5 @@
         </div>
     </div>
 </div>
-
 
 @endsection

@@ -124,6 +124,12 @@
                         <p>Created Meetings</p>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a href="{{ route('admin.one-to-one-session') }}" class="nav-link {{ request()->routeIs('admin.one-to-one-session') ? "active" : "" }}">
+                        <i class="nav-icon fas fa-tachometer-alt"></i>
+                        <p>One Two One Session</p>
+                    </a>
+                </li>
 
                 <!-- Recorded Courses -->
                 <li class="nav-header">Recorded Courses</li>
