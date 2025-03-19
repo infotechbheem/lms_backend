@@ -13,7 +13,6 @@
         gtag('js', new Date());
 
         gtag('config', 'UA-90680653-2');
-
     </script>
 
     <!-- Required meta tags -->

@@ -22,7 +22,8 @@
 
     <!-- Libraries Stylesheet -->
     <link href="{{ asset('volunteer-asset/lib/owlcarousel/assets/owl.carousel.min.css') }}" rel="stylesheet">
-    <link href="{{ asset('volunteer-asset/lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css') }}" rel="stylesheet" />
+    <link href="{{ asset('volunteer-asset/lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css') }}"
+        rel="stylesheet" />
 
     <!-- Customized Bootstrap Stylesheet -->
     <link href="{{ asset('volunteer-asset/css/bootstrap.min.css') }}" rel="stylesheet">
@@ -34,7 +35,8 @@
 <body>
     <div class="container-xxl position-relative bg-white d-flex p-0">
         <!-- Spinner Start -->
-        <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+        <div id="spinner"
+            class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
             <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
                 <span class="sr-only">Loading...</span>
             </div>
@@ -73,6 +75,67 @@
 
     <!-- Template Javascript -->
     <script src="{{ asset('volunteer-asset/js/main.js') }}"></script>
+
+    {{-- script query for sweet alert --}}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    @if (session('failed'))
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: "{{ session('failed') }}",
+                    showConfirmButton: true,
+                    confirmButtonText: 'OK',
+                    // timer: 2000 // Close alert after 2 seconds
+                });
+            });
+        </script>
+    @endif
+    @if (session('error'))
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: "{{ session('error') }}",
+                    showConfirmButton: true,
+                    confirmButtonText: 'OK',
+                    // timer: 2000 // Close alert after 2 seconds
+                });
+            });
+        </script>
+    @endif
+    @if (session('success'))
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Welcome',
+                    text: "{{ session('success') }}",
+                    showConfirmButton: true,
+                    confirmButtonText: 'OK',
+                    // timer: 2000 // Close alert after 2 seconds
+                });
+            });
+        </script>
+    @endif
+    @if (session('warning'))
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Sorry',
+                    text: "{{ session('warning') }}",
+                    showConfirmButton: true,
+                    confirmButtonText: 'OK',
+                    // timer: 2000 // Close alert after 2 seconds
+                });
+            });
+        </script>
+    @endif
+
 </body>
 
 </html>

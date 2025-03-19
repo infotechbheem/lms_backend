@@ -13,18 +13,12 @@ return new class extends Migration
     {
         Schema::create('courses', function (Blueprint $table) {
             $table->id();
-            $table->string('course_title')->nullable();
-            $table->string('class_title')->nullable();
-            $table->string('class_type')->nullable();
+            $table->string('course_title');
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
             $table->time('time')->nullable();
-            $table->string('venue')->nullable();
             $table->string('cover_image')->nullable();
-            $table->string('coordinator')->nullable();
-            $table->string('fee_type')->nullable();
-            $table->string('currency')->nullable();
-            $table->string('discount_price')->nullable();
+            $table->unsignedBigInteger('discount_price')->nullable();
             $table->string('membership_id')->nullable();
             $table->text('description')->nullable();
             $table->timestamps();

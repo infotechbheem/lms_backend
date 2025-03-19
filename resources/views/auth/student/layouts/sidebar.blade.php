@@ -33,7 +33,7 @@
              </a>
          </li>
          <li class="nav-item">
-             <a class="nav-link" data-bs-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
+             <a class="nav-link" href="{{ route('student.assignment') }}">
                  <i class="typcn typcn-document-text menu-icon"></i>
                  <span class="menu-title">Assignment</span>
              </a>
@@ -54,6 +54,12 @@
              <a class="nav-link" href="{{ route('student.quiz') }}">
                  <i class="typcn typcn-document-text menu-icon"></i>
                  <span class="menu-title">Test / Quiz</span>
+             </a>
+         </li>
+         <li class="nav-item">
+             <a class="nav-link" href="{{ route('student.ask-question-answer') }}">
+                 <i class="typcn typcn-document-text menu-icon"></i>
+                 <span class="menu-title">Ask Questing Answer</span>
              </a>
          </li>
          <li class="nav-item">

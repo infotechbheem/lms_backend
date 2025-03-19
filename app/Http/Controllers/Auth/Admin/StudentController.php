@@ -11,12 +11,15 @@ use App\Mail\SendVolunteerSuccessNotification;
 use App\Models\Course;
 use App\Models\Membership;
 use App\Models\Mentor;
+use App\Models\QuestionAnswer;
+
 use App\Models\Student;
 use App\Models\StudentCallingResponseUpdate;
 use App\Models\User;
 use App\Models\Volunteer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
@@ -34,7 +37,7 @@ class StudentController extends Controller
         $mentors = Mentor::join('students', 'students.student_id', '=', 'mentors.mentor_id')->select('students.*')->get();
 
         $memberships = Membership::all();
-        $courses= Course::all();
+        $courses = Course::all();
 
         return view('auth.admin.student.student', compact('students', 'mentors', 'memberships', 'courses'));
     }
@@ -42,7 +45,10 @@ class StudentController extends Controller
     public function studentProfile($student_id)
     {
         $student = Student::where('student_id', $student_id)->first();
-        return view('auth.admin.student.view-student-details', compact('student')); //
+
+        $registeredStudents = Student::where('created_by', $student_id)->get();
+
+        return view('auth.admin.student.view-student-details', compact('student', 'registeredStudents')); //
     }
 
     public function studentRegistration(Request $request)
@@ -301,63 +307,131 @@ class StudentController extends Controller
         }
     }
 
-    public function studentDetails($student_id){
+    public function studentDetails($student_id)
+    {
         $student = Student::where('student_id', $student_id)->first();
         return view('auth.admin.student.update-student-details', compact('student'));
     }
 
     public function storeStudentUpdatedDetails(Request $request, $student_id)
-{
-    // Update student details here and redirect back to the student details page with success message.
-    try {
-        DB::beginTransaction();
+    {
+        // Update student details here and redirect back to the student details page with success message.
+        try {
+            DB::beginTransaction();
 
-        // Find the student using the student_id
-        $student = Student::where('student_id', $student_id)->first();
+            // Find the student using the student_id
+            $student = Student::where('student_id', $student_id)->first();
 
-        if (!$student) {
-            return redirect()->back()->with('error', 'Student not found.');
-        }
-
-        // Update the student details
-        $student->first_name = $request->first_name;
-        $student->last_name = $request->last_name;
-        $student->email = $request->email;
-        $student->phone_number = $request->phone_number;
-        $student->date_of_birth = $request->date_of_birth;
-        $student->gender = $request->gender;
-        $student->address = $request->address;
-        $student->city = $request->city;
-        $student->state = $request->state;
-        $student->zip_code = $request->zip_code;
-        $student->country = $request->country;
-        $student->emergency_contact_phone = $request->emergency_contact_phone;
-        $student->emergency_contact_email = $request->emergency_contact_email;
-        $student->occupation = $request->occupation;
-        $student->annual_income = $request->annual_income;
-
-        // Handle profile image upload if provided
-        if ($request->hasFile('profile_image')) {
-            // Delete the previous image if it exists
-            if ($student->profile_picture && Storage::exists('public/' . $student->profile_picture)) {
-                Storage::delete('public/' . $student->profile_picture);
+            if (!$student) {
+                return redirect()->back()->with('error', 'Student not found.');
             }
 
-            // Store the new profile image
-            $profileData = $request->file('profile_image');
-            $student->profile_picture = $profileData->store('student/profile-picture', 'public');
+            // Update the student details
+            $student->first_name = $request->first_name;
+            $student->last_name = $request->last_name;
+            $student->email = $request->email;
+            $student->phone_number = $request->phone_number;
+            $student->date_of_birth = $request->date_of_birth;
+            $student->gender = $request->gender;
+            $student->address = $request->address;
+            $student->city = $request->city;
+            $student->state = $request->state;
+            $student->zip_code = $request->zip_code;
+            $student->country = $request->country;
+            $student->emergency_contact_phone = $request->emergency_contact_phone;
+            $student->emergency_contact_email = $request->emergency_contact_email;
+            $student->occupation = $request->occupation;
+            $student->annual_income = $request->annual_income;
+
+            // Handle profile image upload if provided
+            if ($request->hasFile('profile_image')) {
+                // Delete the previous image if it exists
+                if ($student->profile_picture && Storage::exists('public/' . $student->profile_picture)) {
+                    Storage::delete('public/' . $student->profile_picture);
+                }
+
+                // Store the new profile image
+                $profileData = $request->file('profile_image');
+                $student->profile_picture = $profileData->store('student/profile-picture', 'public');
+            }
+
+            $student->save(); // Save updated details to the database
+
+            DB::commit();
+
+            // Redirect back to the student details page with success message
+            return redirect()->route('admin.student', $student_id)->with('success', 'Student details updated successfully');
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return redirect()->back()->with('error', $th->getMessage());
         }
-
-        $student->save(); // Save updated details to the database
-
-        DB::commit();
-
-        // Redirect back to the student details page with success message
-        return redirect()->route('admin.student', $student_id)->with('success', 'Student details updated successfully');
-    } catch (\Throwable $th) {
-        DB::rollBack();
-        return redirect()->back()->with('error', $th->getMessage());
     }
-}
+
+    public function questionAnswering()
+    {
+        // Retrieve all question answers
+        $questions = QuestionAnswer::all();
+
+        // Encrypt the IDs of each question answer
+        $encryptedQuestions = $questions->map(function ($question) {
+            $question->encrypted_id = Crypt::encryptString($question->id);  // Encrypt the ID
+            return $question;
+        });
+
+        // Return the view with encrypted question answers
+        return view('auth.admin.student.question-answering', compact('questions', 'encryptedQuestions'));
+    }
+
+    public function viewQuestionAnswering($id)
+    {
+
+        $decrypt_id = Crypt::decryptString($id);
+
+        $question = QuestionAnswer::where('id', $decrypt_id)->first();
+
+        return view('auth.admin.student.view-question-answer', compact('question'));
+    }
+
+    public function submitQuestionAnsweringResponse(Request $request)
+    {
+        // dd($request->all());
+
+        try {
+            DB::beginTransaction();
+
+            $data = [
+                'answer' => $request->response,
+                'status' => true,
+            ];
+            $multipleFiles = [];
+            // Check if files were uploaded
+            if ($request->hasFile('attachment')) {
+                $files = $request->file('attachment');
+                // Loop through each file and store it
+                foreach ($files as $file) {
+                    $filePath = $file->store('question-answer/attachments', 'public');
+                    $multipleFiles[] = $filePath;  // Add each file path to the array
+                }
+                // Store the file paths as a JSON-encoded array
+                $data['answer_with_attachment'] = json_encode($multipleFiles);
+            }
+
+
+            $response = QuestionAnswer::where('id', $request->id)->update($data);
+
+            if ($response) {
+                DB::commit();
+                return redirect()->back()->with('success', 'Response submitted successfully');
+            } else {
+                DB::rollBack();
+                return redirect()->back()->with('error', 'Failed to submit response');
+            }
+        } catch (\Throwable $th) {
+            //throw $th;
+            DB::rollBack();
+            dd($th);
+            return redirect()->back()->with('error', $th->getMessage());
+        }
+    }
 
 }

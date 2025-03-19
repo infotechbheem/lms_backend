@@ -40,7 +40,6 @@
                                 <th>Selling Price</th>
                                 <th>Discount Price</th>
                                 <th>Cover Image</th>
-                                <th>Discription</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -62,9 +61,6 @@
                                     @endif
                                 </td>
                                 <td>
-                                    <button class="btn btn-sm btn-outline-primary" data-membership_id="{{ $member->membership_id }}" data-description="{{ $member->description }}">click Here</button>
-                                </td>
-                                <td>
                                     <a href="{{ route('admin.view-membership-details', $member->membership_id) }}" class="btn btn-sm btn-outline-success">view</a>
                                     <a href="{{ route('admin.delete-membership', $member->id) }}" class="btn btn-sm btn-outline-danger delete-btn">Delete</a>
                                 </td>
@@ -77,44 +73,5 @@
         </div>
     </section>
 </div>
-
-<!-- Modal -->
-<div class="modal fade" id="membershipModal" tabindex="-1" role="dialog" aria-labelledby="membershipModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="membershipModalLabel">Membership Description</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p id="membershipDescriptionText">Loading...</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- jQuery -->
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-
-<script>
-    $(document).ready(function() {
-        // Handle the 'View' button click event
-        $('.getMembershipDetails').click(function() {
-            var membershipDescription = $(this).data('description'); // Get the description
-
-            // Set the description text into the modal
-            $('#membershipDescriptionText').text(membershipDescription);
-
-            // Show the modal (Bootstrap 4 syntax)
-            $('#membershipModal').modal('show');
-        });
-    });
-
-</script>
 
 @endsection

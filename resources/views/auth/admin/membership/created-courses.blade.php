@@ -8,7 +8,9 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Created Course</h1>
+                    <h1 class="m-0">
+                        Course
+                    </h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -25,19 +27,25 @@
     <section class="content">
         <div class="container-fluid">
             <div class="card">
+                <div class="card-header">
+                    <div class="d-flex" style="justify-content: space-between; align-items: center;">
+                        <div class="card-title"><strong>Created Course / Class</strong></div>
+                        <button class="btn btn-sm btn-outline-success" data-toggle="modal" data-target="#createNewCourse"><i class="fas fa-plus mr-1"></i> Add New Course</button>
+                    </div>
+                </div>
                 <div class="card-body">
                     <table id="example1" class="table table-bordered table-striped">
                         <thead>
                             <tr>
                                 <th>S.N.</th>
                                 <th>Course Title</th>
-                                <th>Class Title</th>
-                                <th>Class Type</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
                                 <th>Time</th>
-                                <th>Fee Type</th>
+                                <th>Cover Image</th>
                                 <th>Discount</th>
-                                <th>Coordinator Name</th>
-                                <th>Venue</th>
+                                <th>Membership ID</th>
+                                <th>Description</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -46,21 +54,23 @@
                             <tr>
                                 <td>{{ $key + 1 }}</td>
                                 <td>{{ $class->course_title }}</td>
-                                <td>{{ $class->class_title }}</td>
-                                <td>{{ $class->class_type }}</td>
-                                <td>{{ $class->time }}</td>
-                                <td>{{ $class->fee_type }}</td>
+                                <td>{{ formatDate($class->start_date) }}</td>
+                                <td>{{ formatDate($class->end_date) }}</td>
+                                <td>{{ formatTime($class->time) }}</td>
+                                <td>
+                                    <img src="{{ showImage($class->cover_image) }}" alt="{{ $class->course_title }}">
+                                </td>
                                 <td>₹ {{ number_format($class->discount_price, 2) }}</td>
-                                <td>{{ $class->coordinator }}</td>
-                                <td>{{ $class->venue }}</td>
+                                <td>{{ $class->membership_id }}</td>
+                                <td>{{ $class->description }}</td>
                                 <td>
                                     <!-- View Course Details -->
                                     <a href="{{ route('admin.view-course-details', $class->encrypted_id) }}" class="btn btn-sm btn-warning" title="View Course Material Details"><i class="fas fa-eye"></i></a>
 
-                                    <!-- Edit Modal Button -->
+                                    {{-- <!-- Edit Modal Button -->
                                     <button class="btn btn-sm btn-success" data-toggle="modal" data-target="#editClassModal" data-id="{{ $class->id }}" data-course_title="{{ $class->course_title }}" data-class_title="{{ $class->class_title }}" data-class_type="{{ $class->class_type }}" data-date="{{ $class->date }}" data-time="{{ $class->time }}" data-fee_type="{{ $class->fee_type }}" data-currency="{{ $class->currency }}" data-discount_price="{{ $class->discount_price }}" data-coordinator="{{ $class->coordinator }}" data-venue="{{ $class->venue }}" data-cover_image="{{ $class->cover_image }}">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
+                                    <i class="fas fa-edit"></i>
+                                    </button> --}}
 
                                     <!-- Delete Button -->
                                     <a href="{{ route('admin.delete-course', $class->id) }}" class="btn btn-sm btn-danger delete-btn">

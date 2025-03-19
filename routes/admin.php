@@ -21,14 +21,21 @@ Route::middleware(['admin_auth', 'clear_cache'])->prefix('auth/admin')->group(fu
         Route::get('/all-memberships', 'allMemberships')->name('admin.all-membership');
         Route::get('/view-membership-details/{membershipId}', 'viewMembershipDetails')->name('admin.view-membership-details');  
         Route::get('/delete-membership/{id}', 'deleteMembership')->name('admin.delete-membership');
-        Route::get('/create-courses', 'createCourse')->name(name: 'admin.create-courses');
+        Route::get('/create-physical-class', 'createPhysicalClass')->name(name: 'admin.create-physical-session');
         Route::get('/created-course', 'createdCourse')->name('admin.created-course');
+        Route::post('/store-course', 'storeCourse')->name('admin.store-course');
         Route::get('/view-course-details/{course_id}', 'viewCourseDetails')->name('admin.view-course-details');
-        Route::post('/store-course', action: 'storeCourse')->name('admin.store-course');
+        Route::post('/store-physical-classes', action: 'storePhysicalClass')->name('admin.store-physical-class');
         Route::post('/store-class', 'storeClass')->name('admin.store-class');
         Route::get('/delete-course/{id}', 'deleteCourse')->name('admin.delete-course');
         Route::get('/delete-class/{id}', 'deleteClass')->name('admin.delete-class');
         Route::get('/student-change-status/{student_id}', 'studentChangeStatus')->name('admin.student-change-status');
+
+        // Physical Session
+
+        Route::get('/create-physical-session','createPhysicalClass')->name('admin.create-physical-classes');
+
+
     });
 
     Route::controller(StudentController::class)->prefix('student')->group(function () {
@@ -47,6 +54,9 @@ Route::middleware(['admin_auth', 'clear_cache'])->prefix('auth/admin')->group(fu
         Route::post('/send-class-reminder', 'sendClassReminder')->name('admin.send-class-reminder');
         Route::get('/update-student-details/{student_id}', 'studentDetails')->name('admin.update-student-details');
         Route::post('/store-student-updated-details/{student_id}', 'storeStudentUpdatedDetails')->name('admin.store-student-updated-details');
+        Route::get('/question-answering', 'questionAnswering')->name('admin.question-answering');
+        Route::get('/view-question-answering/{id}', 'viewQuestionAnswering')->name('admin.view-question-answering');
+        Route::post('/stubmit-response','submitQuestionAnsweringResponse')->name('admin.submit-question-answering-response');
     });
 
     Route::controller(AttendanceController::class)->prefix('attendance')->group(function () {
@@ -69,5 +79,9 @@ Route::middleware(['admin_auth', 'clear_cache'])->prefix('auth/admin')->group(fu
         Route::get('/add-recording', 'addRecording')->name('admin.add-recording');
         Route::post('/store-recorded-course', 'storeRecordedCourse')->name('admin.store-recorded-course');
         Route::get('/add-assignmets', 'addAssignment')->name('admin.add-assignments');
+        Route::post('/store-assignment', 'storeAssignment')->name('admin.store-assignment');
+        Route::post('/store-comments', 'storeComments')->name('admin.store-comments');
+   
+   
     });
 });

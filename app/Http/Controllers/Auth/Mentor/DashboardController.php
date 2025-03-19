@@ -23,51 +23,58 @@ class DashboardController extends Controller
     public function numberOfStudentRegisteredToday()
     {
         $getNoOfRecord = Student::where('created_by', Auth::user()->username)
-                                ->orWhere('mentor_id', Auth::user()->username)
-                                ->whereDate('created_at', Carbon::today())
-                                ->count();
+            ->orWhere('mentor_id', Auth::user()->username)
+            ->whereDate('created_at', Carbon::today())
+            ->count();
         return $getNoOfRecord;
     }
 
     public function numberOfStudentRegisteredYesterday()
     {
         $getNoOfRecord = Student::where('created_by', Auth::user()->username)
-                                ->orWhere('mentor_id', Auth::user()->username)
-                                ->whereDate('created_at', Carbon::yesterday())
-                                ->count();
+            ->orWhere('mentor_id', Auth::user()->username)
+            ->whereDate('created_at', Carbon::yesterday())
+            ->count();
         return $getNoOfRecord;
     }
     public function numberOfStudentRegisteredThisMonth()
     {
         $getNoOfRecord = Student::where('created_by', Auth::user()->username)
-                                ->orWhere('mentor_id', Auth::user()->username)
-                                ->whereBetween('created_at', [
-                                    Carbon::now()->startOfMonth(),  // Start of this month
-                                    Carbon::now()->endOfMonth()     // End of this month
-                                ])
-                                ->count();
+            ->orWhere('mentor_id', Auth::user()->username)
+            ->whereBetween('created_at', [
+                Carbon::now()->startOfMonth(),  // Start of this month
+                Carbon::now()->endOfMonth()     // End of this month
+            ])
+            ->count();
         return $getNoOfRecord;
     }
-    
+
     public function dashbaord()
     {
         $courses = Course::all();
         $memberships = Membership::all();
-        $students =Student::where('created_by', Auth::user()->username)->orWhere('mentor_id', Auth::user()->username)->get();
+        $students = Student::where('created_by', Auth::user()->username)->orWhere('mentor_id', Auth::user()->username)->get();
 
         $noOfStudent = $this->numberOfStudentRegistered();
-        $noOfStudentToday  = $this->numberOfStudentRegisteredToday();
-        $noOfStudentYesterday  = $this->numberOfStudentRegisteredYesterday();
-        $noOfStudentThisMonth  = $this->numberOfStudentRegisteredThisMonth();
+        $noOfStudentToday = $this->numberOfStudentRegisteredToday();
+        $noOfStudentYesterday = $this->numberOfStudentRegisteredYesterday();
+        $noOfStudentThisMonth = $this->numberOfStudentRegisteredThisMonth();
 
-        // Calculate registrations per month (for example, this year)
-        $monthlyRegistrations = [];
+        $monthlyRegistrations = Student::selectRaw('MONTH(created_at) as month, COUNT(*) as count')
+            ->where(function ($query) {
+                $query->where('created_by', Auth::user()->username)
+                    ->orWhere('mentor_id', Auth::user()->username);
+            })
+            ->whereYear('created_at', '=', now()->year)
+            ->groupByRaw('MONTH(created_at)')
+            ->pluck('count', 'month')
+            ->toArray();
+
+        // Fill missing months with 0 registrations
         for ($i = 1; $i <= 12; $i++) {
-            $monthlyRegistrations[$i] = Student::where('created_by', Auth::user()->username)->orWhere('mentor_id', Auth::user()->username)
-                ->whereMonth('created_at', '=', $i)
-                ->whereYear('created_at', '=', now()->year)
-                ->count();
+            $monthlyRegistrations[$i] = $monthlyRegistrations[$i] ?? 0;
         }
+
 
 
         $newRegistrationDone = Student::where('created_by', Auth::user()->username)
@@ -80,17 +87,18 @@ class DashboardController extends Controller
             ->whereDate('created_at', '<=', Carbon::now()->endOfMonth())   // End of the current month
             ->count();
 
+
         return view("auth.mentor.dashboard", compact(
             'courses',
-             'memberships',
-                'students',
-                'noOfStudent',
-                'noOfStudentToday',
-                'noOfStudentYesterday',
-                'noOfStudentThisMonth',
-                'monthlyRegistrations',
-                'newRegistrationDone',
-                'chooses_as_a_mentor',
+            'memberships',
+            'students',
+            'noOfStudent',
+            'noOfStudentToday',
+            'noOfStudentYesterday',
+            'noOfStudentThisMonth',
+            'monthlyRegistrations',
+            'newRegistrationDone',
+            'chooses_as_a_mentor',
         ));
     }
 
@@ -102,5 +110,4 @@ class DashboardController extends Controller
         }
         return redirect()->back()->with('warning', 'You are not allowed to log out');
     }
-
 }

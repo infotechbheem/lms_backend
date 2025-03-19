@@ -105,11 +105,11 @@ class AttendanceController extends Controller
             ->select(
                 'student_id',
                 DB::raw('MAX(student_name) as student_name'),
-                DB::raw('MAX(course) as courses'),
+                DB::raw('MAX(selected_id) as courses'),
                 DB::raw('GROUP_CONCAT(attendance_status ORDER BY created_at ASC) as attendance_statuses'),
                 DB::raw('GROUP_CONCAT(DATE(created_at) ORDER BY created_at ASC) as attendance_dates'),
                 DB::raw('GROUP_CONCAT(TIME(created_at) ORDER BY created_at ASC) as attendance_in_times'),
-                DB::raw('GROUP_CONCAT(attendnace_punctuality ORDER BY created_at ASC) as attendnace_punctualities')
+                // DB::raw('GROUP_CONCAT(attendnace_punctuality ORDER BY created_at ASC) as attendnace_punctualities')
             )
             ->groupBy('student_id')
             ->get();

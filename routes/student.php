@@ -26,7 +26,12 @@ Route::middleware(['student_auth', 'clear_cache'])->prefix('auth/student')->grou
         Route::get('/quiz', 'quiz')->name('student.quiz');
         Route::get('/daily-sadhna-report', 'dailySadhnaReport')->name('student.daily-sadhana-report');
         Route::post('/store-daily-sadhna-report', 'storeDailySadhanaReport')->name('student.store-daily-sadhana-report');
-       
+        Route::get('/ask-question-answer', 'askQuestionAnswer')->name('student.ask-question-answer');
+        Route::post('/store-question-answer', 'storeQuestionAnswer')->name('student.store-question-answer');
+        Route::get('/get-question-answer-details/{id}', 'getQuestionAnswerDetails')->name('student.get-question-answer-details');
+        Route::get('/assignment', 'assignment')->name('student.assignment');
+        Route::get('/view-assignment/{assignment_id}', 'viewAssignment')->name('student.view-assignment');
+        Route::post('/submit-assignment/{assignment_id}', 'submitAssignment')->name('student.submit-assignment');
         // Online Live Classes
         Route::get('/live-classes', 'liveClasses')->name('student.live-classes');
     });

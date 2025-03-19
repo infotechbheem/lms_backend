@@ -2,9 +2,11 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Membership;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\View;
 use Symfony\Component\HttpFoundation\Response;
 
 class AdminAuthMiddleware
@@ -20,6 +22,12 @@ class AdminAuthMiddleware
         if (Auth::check()) {
             $user = Auth::user();
             if ($user->hasRole('admin')) {
+
+                $memberships = Membership::all();
+                View::share([
+                    'memberships' => $memberships,
+                ]);
+
                 return $next($request);
             }
             Auth::logout();

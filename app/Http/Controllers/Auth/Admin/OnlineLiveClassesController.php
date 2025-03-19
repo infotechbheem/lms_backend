@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Course;
 use App\Models\Membership;
+use App\Models\PhysicalClass;
 use App\Models\Student;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -59,7 +60,7 @@ class OnlineLiveClassesController extends Controller
         $data = $allMeetings['data'];
         $meetings = $data['meetings'];
 
-        $courses = Course::all();
+        $courses = PhysicalClass::all();
         $memberships = Membership::all();
         $students = Student::all();
 

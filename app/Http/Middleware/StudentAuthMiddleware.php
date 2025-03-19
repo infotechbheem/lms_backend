@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Course;
 use App\Models\Student;
 use Closure;
 use Illuminate\Http\Request;
@@ -35,8 +36,15 @@ class StudentAuthMiddleware
                 return redirect()->back()->with('warning', 'Student details not found');
             }
 
+            $courseId = Student::where('student_id', $user->username)->first();
+
+            $course_decoded = json_decode($courseId->course_id, true);
+            
+            // Join the students table with the courses table using the decoded course ids
+            $courses = Course::whereIn('id', $course_decoded)  // Assuming `course_id` is the column in `courses` table
+            ->get();
             // Share the student data with the view
-            View::share('student', $student);
+            View::share(['student' => $student, 'courses' => $courses]);
 
             // Proceed to the next middleware/request handler
             return $next($request);

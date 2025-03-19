@@ -27,7 +27,7 @@
         <div class="container-fluid">
             <div class="card">
                 <div class="card-body">
-                    <form action="{{ route('admin.store-course') }}" id="offlineClassForm" method="post" enctype="multipart/form-data">
+                    <form action="{{ route('admin.store-physical-class') }}" id="offlineClassForm" method="post" enctype="multipart/form-data">
                         @csrf
                         <div class="row">
                             <div class="col-md-4 col-sm-6">
@@ -154,4 +154,23 @@
         </div>
     </section>
 </div>
+
+<!-- jQuery -->
+<script src="{{ asset('admin-asset/plugins/jquery/jquery.min.js') }}"></script>
+
+<script>
+    $(document).ready(function() {
+
+        $("#class_type").change(function() {
+            console.log("working");
+
+            var selectedClassType = $(this).val();
+
+            console.log(selectedClassType);
+
+        });
+    })
+
+</script>
+
 @endsection

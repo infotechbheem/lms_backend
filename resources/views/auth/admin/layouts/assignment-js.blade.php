@@ -1,4 +1,4 @@
-    {{-- <script src="{{ asset('admin-asset/plugins/jquery/jquery.min.js') }}"></script>
+    <script src="{{ asset('admin-asset/plugins/jquery/jquery.min.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         $(document).ready(function() {
@@ -105,8 +105,9 @@
                 $('.multiple-chopice-option, .multiple-chopice-option-add').css('display', 'flex');
             }
         });
-    </script> --}}
-    <script src="{{ asset('admin-asset/plugins/jquery/jquery.min.js') }}"></script>
+
+    </script>
+    {{-- <script src="{{ asset('admin-asset/plugins/jquery/jquery.min.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
@@ -222,4 +223,5 @@
             });
 
         });
-    </script>
+
+    </script> --}}

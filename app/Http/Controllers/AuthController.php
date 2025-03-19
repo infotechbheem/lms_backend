@@ -22,7 +22,7 @@ class AuthController extends Controller
     {
         $credentials = request(['email', 'password']);
 
-        if (! $token = Auth::attempt($credentials)) {
+        if (!$token = Auth::attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
@@ -170,16 +170,18 @@ class AuthController extends Controller
             if (Auth::attempt([$field => $input['username'], 'password' => $input['password']])) {
                 $user = Auth::user();
                 // Redirect based on the user role
-                    if ($user->hasRole('mentor')) {
+                if ($user->hasRole('mentor')) {
+                    return redirect()->route('mentor.dashboard');
+                } else if ($user->hasRole('student')) {
+
+                    if (Mentor::where('mentor_id', $user->username)->exists()) {
+                        dd($user->usermname);
+                        // Fetch the mail details for this ngo_id from the database
                         return redirect()->route('mentor.dashboard');
-                    }else if ($user->hasRole('student')) {
-                        if(Mentor::where('mentor_id', $user->username)){
-                            // Fetch the mail details for this ngo_id from the database
-                            return redirect()->route('mentor.dashboard');
-                        }
-                        Auth::logout();
-                        return redirect('/mentor-login')->with('failed', 'You do not have access to this area.');
                     }
+                    Auth::logout();
+                    return redirect('/mentor-login')->with('failed', 'You do not have access to this area.');
+                }
                 // If the user does not have a recognized role, log them out
                 Auth::logout();
                 return redirect('/mentor-login')->with('failed', 'You do not have access to this area.');
@@ -213,8 +215,8 @@ class AuthController extends Controller
                 // Redirect based on the user role
                 if ($user->hasRole('volunteer')) {
                     return redirect()->route('volunteer.dashboard');
-                }else if ($user->hasRole('volunteer')) {
-                    if(Volunteer::where('volunteer_id', $user->username)){
+                } else if ($user->hasRole('student')) {
+                    if (Volunteer::where('volunteer_id', $user->username)->exists()) {
                         // Fetch the mail details for this ngo_id from the database
                         return redirect()->route('volunteer.dashboard');
                     }

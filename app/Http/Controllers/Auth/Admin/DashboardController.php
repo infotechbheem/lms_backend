@@ -3,6 +3,10 @@
 namespace App\Http\Controllers\Auth\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Course;
+use App\Models\Mentor;
+use App\Models\Student;
+use App\Models\Volunteer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -10,7 +14,11 @@ class DashboardController extends Controller
 {
     public function dashbaord()
     {
-        return view('auth.admin.dashboard');
+        $totalStudentRegistered = Student::count();
+        $totalMemtorEnrolled = Mentor::count();
+        $totalVolunteerEnrolled = Volunteer::count();
+        $totalCourseUpdated = Course::count();
+        return view('auth.admin.dashboard', compact('totalStudentRegistered', 'totalMemtorEnrolled', 'totalVolunteerEnrolled', 'totalCourseUpdated'));
     }
 
 

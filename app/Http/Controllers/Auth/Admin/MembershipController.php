@@ -8,6 +8,7 @@ use App\Models\Classes;
 use App\Models\Course;
 use App\Models\CourseCurriculum;
 use App\Models\Membership;
+use App\Models\PhysicalClass;
 use App\Models\RecordedCourse;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -78,7 +79,7 @@ class MembershipController extends Controller
     public function viewMembershipDetails($membershipId){
         // Find the membership by ID
         $membership = Membership::where('membership_id', $membershipId)->first();
-        $course = Course::where('membership_id', $membershipId)->get();
+        $course = PhysicalClass::where('membership_id', $membershipId)->get();
         return view('auth.admin.membership.view-membership-details', compact('membership', 'course'));
     }
 
@@ -112,13 +113,13 @@ class MembershipController extends Controller
         }
     }
 
-    public function createCourse(){
+    public function createPhysicalClass(){
         $memberships = Membership::all();
-        return view('auth.admin.membership.create-course', compact('memberships'));
+        return view('auth.admin.membership.create-physical-class', compact('memberships'));
     }
 
 
-    public function storeCourse(Request $request)
+    public function storePhysicalClass(Request $request)
     {
         try {
             DB::beginTransaction();
@@ -144,7 +145,7 @@ class MembershipController extends Controller
                 $offlineData['cover_image'] = $file->store('course/cover-image', 'public');
             }
 
-            $dbResponse = Course::create($offlineData);
+            $dbResponse = PhysicalClass::create($offlineData);
             if ($dbResponse) {
                 DB::commit();
                 return redirect()->back()->with('success', 'Offline Class created successfully');
@@ -164,11 +165,47 @@ class MembershipController extends Controller
             $course->encrypted_id = Crypt::encryptString($course->id);
             return $course;
         });
+
+        // dd($courses);
+
         return view('auth.admin.membership.created-courses', compact('courses'));
     }
 
+    public function storeCourse(Request $request){
+        try {
+            DB::beginTransaction();
+
+            $requestData = [
+                'course_title' => $request->course_title,
+                'start_date' => $request->start_date,
+                'end_date' => $request->end_date,
+                'time' => $request->time,
+                'discount_price' => $request->discount_price,
+                'membership_id' => $request->membership,
+                'description' => $request->descriptions,
+            ];
+
+            if($request->hasFile('cover_image')){
+                $imageFile = $request->file('cover_image');
+                $requestData['cover_image'] = $imageFile->store('course/cover-image', 'public');
+            }
+
+            $requestData = Course::create($requestData);
+            if ($requestData) {
+                DB::commit();
+                return redirect()->back()->with('success', 'Course created successfully');
+            }
+            
+        } catch (\Throwable $th) {
+            //throw $th;
+            DB::rollBack();
+            return redirect()->back()->with('error', $th->getMessage());
+        }
+
+    }
+
     public function deleteCourse($course_id){
-        $dbCourse = Course::find($course_id);
+        $dbCourse = PhysicalClass::find($course_id);
         $dbCourse->delete();
         return redirect()->back()->with('success','Course deleted successfully');
     }
@@ -200,28 +237,47 @@ class MembershipController extends Controller
 
     public function viewCourseDetails($Course_id){
         // // Decrypt the course ID
-        $materialId = Crypt::decryptString( $Course_id);
-    
+        $courseId = Crypt::decryptString( $Course_id);
+
         // Get all course curriculum details by course ID
-        $courseMaterialDetails = CourseCurriculum::where('course_id', $materialId)->get();
+        $course = Course::find($courseId);
+
+        $recordedCourse = RecordedCourse::where('course_id', $courseId)->first();
+
+        $CourseCarruculam = CourseCurriculum::leftJoin('class_comments', function($join) {
+            $join->on('course_curriculum.chapter_number', '=', 'class_comments.chapter_number')
+                 ->on('course_curriculum.section_number', '=', 'class_comments.section_number');
+        })
+        ->select(
+            'course_curriculum.*',
+            'class_comments.comment',
+            'class_comments.student_name',
+            'class_comments.created_at as comment_created_date'
+        )
+        ->where('course_curriculum.course_id', $courseId)
+        ->get();
+
+        $groupedChapters = $CourseCarruculam->groupBy('section_number');
+
+
+        // Now, you need to format the comments for each chapter to group them as an array of comments
+        $groupedChapters = $groupedChapters->map(function ($chapters) {
+            return $chapters->groupBy('chapter_number')->map(function ($chapterGroup) {
+                $chapter = $chapterGroup->first(); // Assuming the first record in the group is the main chapter record
+                $comments = $chapterGroup->map(function ($comment) {
+                    return [
+                        'student_name' => $comment->student_name,
+                        'comment' => $comment->comment,
+                        'comment_created_date' => $comment->comment_created_date
+                    ];
+                })->toArray();
     
-        // dd($courseMaterialDetails);
-        // Get the course details
-        $course = Course::find($materialId);
-    
-        // Get the recorded course (for intro video, etc.)
-        $recordedCourse = RecordedCourse::where('course_id', $materialId)->first();
-    
-        // // If any of the details are missing, redirect back with an error
-        // if(!$courseMaterialDetails || !$courseDetails || !$recordedCourse){
-        //     return redirect()->back()->with('error', 'Material courses not found');
-        // }
-    
-        // Group the chapters by section number
-        $groupedChapters = $courseMaterialDetails->groupBy('section_number');
-        
-        // Return the view with the required data
-        // return view('auth.admin.membership.view-course-details', compact('groupedChapters', 'courseDetails', 'recordedCourse'));
-        return view('auth.admin.membership.view-course-details', compact('recordedCourse','course', 'groupedChapters'));
+                $chapter->comments = $comments;
+                return $chapter;
+            });
+        });
+
+        return view('auth.admin.membership.view-course-details', compact('course', 'recordedCourse', 'groupedChapters'));
     }
+
 }

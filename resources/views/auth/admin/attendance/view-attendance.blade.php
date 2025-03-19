@@ -98,7 +98,7 @@
 
                                                     // Safe array access with a check
                                                     $attendanceIn = $statusIndex !== false && isset(explode(',', $attendance->attendance_in_times)[$statusIndex]) ? explode(',', $attendance->attendance_in_times)[$statusIndex] : null;
-                                                    $attendancePunctuality = $statusIndex !== false && isset(explode(',', $attendance->attendnace_punctualities)[$statusIndex]) ? explode(',', $attendance->attendnace_punctualities)[$statusIndex] : null;
+                                                    // $attendancePunctuality = $statusIndex !== false && isset(explode(',', $attendance->attendnace_punctualities)[$statusIndex]) ? explode(',', $attendance->attendnace_punctualities)[$statusIndex] : null;
 
                                                     $bgColor = match($status) {
                                                     'present' => 'lightgreen',
@@ -133,14 +133,6 @@
                                                             @endif
                                                         </span>
 
-                                                        <!-- OUT Time -->
-                                                        <span class="bg-secondary" style="display: inline-block; width: 130px; text-align: center; border-radius: 14px; margin-top: 9px;">
-                                                            @if ($attendancePunctuality)
-                                                            <p class="m-0">Punctuality</p> {{ $attendancePunctuality }}
-                                                            @else
-                                                            <p class="m-0">Punctuality</p> N/A
-                                                            @endif
-                                                        </span>
                                                         <br>
                                                     </td>
                                                     @endfor
@@ -195,7 +187,7 @@
                                     </tbody>
                                     <tfoot>
                                         <tr>
-                                            <td colspan="4" class="text-right"><strong>Total:</strong></td>
+                                            <td colspan="3" class="text-right"><strong>Total:</strong></td>
                                             <td><strong>{{ $totals['present'] }}</strong></td>
                                             <td><strong>{{ $totals['absent'] }}</strong></td>
                                             <td><strong>{{ $totals['leave'] }}</strong></td>
